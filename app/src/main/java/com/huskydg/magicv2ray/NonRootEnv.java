@@ -140,7 +140,7 @@ final class NonRootEnv {
         try (ZipFile zf = new ZipFile(c.getApplicationInfo().sourceDir)) {
             for (String g : new String[]{"geoip.dat", "geosite.dat"}) {
                 ZipEntry e = zf.getEntry("bin/" + g);
-                if (e == null) throw new IOException("not in APK: bin/" + g);
+                if (dst.isFile() && dst.length() > 0) continue;
                 File dst = bin(c, g);
                 if (dst.isFile() && dst.length() == e.getSize()) continue;
                 File tmp = new File(dst.getPath() + ".new");
