@@ -359,6 +359,7 @@ public class MainActivity extends Activity {
                         if (o.rebootRecommended) {
                             Toast.makeText(this, R.string.reboot_hint, Toast.LENGTH_LONG).show();
                         }
+                        GeoDataUpdater.checkAndUpdateAsync(getApplicationContext());
                         showWebUi();
                         break;
                     case NO_ROOT:
@@ -388,8 +389,12 @@ public class MainActivity extends Activity {
             final String e = err;
             runOnUiThread(() -> {
                 if (isFinishing()) return;
-                if (e == null) showWebUi();
-                else showError(R.string.err_install_title, getString(R.string.err_install) + "\n\n" + e);
+                if (e == null) {
+                    GeoDataUpdater.checkAndUpdateAsync(getApplicationContext());
+                    showWebUi();
+                } else {
+                    showError(R.string.err_install_title, getString(R.string.err_install) + "\n\n" + e);
+                }
             });
         }, "mv-setup-nonroot").start();
     }
