@@ -140,9 +140,9 @@ final class NonRootEnv {
         try (ZipFile zf = new ZipFile(c.getApplicationInfo().sourceDir)) {
             for (String g : new String[]{"geoip.dat", "geosite.dat"}) {
                 ZipEntry e = zf.getEntry("bin/" + g);
-                if (dst.isFile() && dst.length() > 0) continue;
+                if (e == null) throw new IOException("not in APK: bin/" + g);
                 File dst = bin(c, g);
-                if (dst.isFile() && dst.length() == e.getSize()) continue;
+                if (dst.isFile() && dst.length() > 0) continue;
                 File tmp = new File(dst.getPath() + ".new");
                 try (InputStream in = zf.getInputStream(e); FileOutputStream out = new FileOutputStream(tmp)) {
                     byte[] b = new byte[64 * 1024];
@@ -152,7 +152,7 @@ final class NonRootEnv {
                 if (!tmp.renameTo(dst)) throw new IOException("cannot replace " + dst);
             }
         }
-    }
+
 
     /** Module dir the WebUI shell works against: the app's own in non-root mode, the root module otherwise. */
     static String activeModdir(Context c) {
