@@ -242,8 +242,8 @@ final class ModuleInstaller {
                         + "put bin/xray 0755 || fail bin/xray\n"
                         + "put bin/xhuskydg_helper 0755 || fail bin/xhuskydg_helper\n"
                         + "put bin/curl 0755 || fail bin/curl\n"
-                        + "put bin/geoip.dat 0644 || fail bin/geoip.dat\n"
-                        + "put bin/geosite.dat 0644 || fail bin/geosite.dat\n"
+                        + "[ -s \"$MOD/bin/geoip.dat\" ] || put bin/geoip.dat 0644 || fail bin/geoip.dat\n"
+                        + "[ -s \"$MOD/bin/geosite.dat\" ] || put bin/geosite.dat 0644 || fail bin/geosite.dat\n"
                         + "put service.sh 0755 || fail service.sh\n"
                         + "put uninstall.sh 0755 || fail uninstall.sh\n"
                         + "put action.sh 0755 || fail action.sh\n"
@@ -294,7 +294,7 @@ final class ModuleInstaller {
      * ({@code xhuskydg_helper service --stop} writes stop_svc and waits until it is gone), then
      * starts the new one. Returns false when the old service could not be stopped.
      */
-    private static boolean restartService() {
+    static boolean restartService() {
         RootShell.Result r = RootShell.run(
                 "M=" + RootShell.sq(MODDIR) + "\n"
                         + "\"$M/bin/xhuskydg_helper\" service --stop >/dev/null 2>&1\n"
@@ -316,7 +316,6 @@ final class ModuleInstaller {
         Map<String, String> m = new LinkedHashMap<>();
         try (ZipFile zf = new ZipFile(ctx.getApplicationInfo().sourceDir)) {
             for (String f : TEXT_ASSETS) m.put(f, sha256Entry(zf, f));
-            for (String f : DATA_ASSETS) m.put(f, sha256Entry(zf, f));
         }
         File libDir = new File(ctx.getApplicationInfo().nativeLibraryDir);
         for (String[] b : NATIVE_BINS) {
