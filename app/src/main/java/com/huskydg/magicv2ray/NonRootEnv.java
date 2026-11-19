@@ -152,7 +152,7 @@ final class NonRootEnv {
                 if (!tmp.renameTo(dst)) throw new IOException("cannot replace " + dst);
             }
         }
-
+    }
 
     /** Module dir the WebUI shell works against: the app's own in non-root mode, the root module otherwise. */
     static String activeModdir(Context c) {
